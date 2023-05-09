@@ -3,18 +3,17 @@
 //
 #include "tasks_rk1.h"
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include "string.h"
+#include "cstring"
 #include "cmath"
 using namespace std;
 //
 // Task1:
 //
-void WorkWithFile:: readFromFile (const char* filename) {
+void WorkWithFile::readFromFile (const char* filename) {
     FILE *res = fopen(filename, "r");
     if(res) {
-        while (fgets(dataOfFile, 2000, res) != NULL){
+        while (fgets(dataOfFile, 2000, res) != nullptr){
         }
     }
     fclose(res);
@@ -81,9 +80,9 @@ char* convertDecToBin(int number){
 
 }
 void task_2(){
-    int number = 234; // Входное десятиричное число
-    writeToFile("result_task2.txt" , convertDecToBin(number));
-    delete[] convertDecToBin(number);
+    int number = 234; // Входное десятичное число
+    writeToFile("result_task2.txt" , convertDecToBin(number));//Запись в файл(имя файла|конвертированное десят. число)
+    delete[] convertDecToBin(number); //Очистка памяти
 }
 //
 // Task3:
@@ -117,7 +116,7 @@ void writeToFileHex(const char* fileName, const char* hexNum, const char* binNum
     }
 }
 void task_3(){
-    const char* binNum = "100011010111";     //Исходное бинарное число
+    const char* binNum = "100011010111";
     char* hexNum = convertBinToHex(binNum);
     writeToFileHex("result_task3.txt", hexNum, binNum);
     delete[] hexNum;
@@ -143,29 +142,29 @@ void task_4(){
 //
 // Task 5:
 //
-vector<pair<int, float>> averStr2DArray(const float* ar, int ColumnCount, int RowCount) {
+vector <pair<int, float>> averStr2DArray(const float* ar, int colCount, int rowCount) {
     vector <pair <int, float> > result;
-    for (int i = 0; i < RowCount; i++) {
+    for (int i = 0; i < rowCount; i++) {
         float sum = 0;
-        for (int j = 0; j < ColumnCount; j++) {
-            sum += ar[i * ColumnCount + j];
+        for (int j = 0; j < colCount; j++) {
+            sum += ar[i * colCount + j];
         }
-        float aver = sum / ColumnCount;
+        float aver = sum / colCount;
         result.push_back(make_pair(i, aver));
     }
     return result;
 }
-void RandomFill(float* ar, int N) { //Функция для заполнения рандомными числами
-    for (int i = 0; i < N; i++) {
+void randFill(float* ar, int N) {
+    for (int i = 0; i < N; i++)
         ar[i] = rand() % 100;
-    }
+
 }
 void task_5(){
-    const int ColumnCount = 5;    //Количество столб
-    const int RowCount = 14;      //Количество строк
-    float ar[ColumnCount * RowCount];
-    RandomFill(ar, ColumnCount * RowCount);
-    vector <pair <int, float> > result = averStr2DArray(ar, ColumnCount, RowCount);
+    const int colCount = 5;    //Количество столбцов
+    const int rowCount = 14;   //Количество строк
+    float ar[colCount * rowCount];
+    randFill(ar, colCount * rowCount);
+    vector <pair <int, float> > result = averStr2DArray(ar, colCount, rowCount);
     fstream file("result_task5.txt", ios::out);
     if (file.is_open()) {
         for (auto pair : result) {
@@ -175,94 +174,4 @@ void task_5(){
     } else {
         cout << "Unable to open file" << endl;
     }
-}
-//
-//Task6:
-//
-LinkedList::LinkedList() {
-    Head = nullptr;
-    Tail = nullptr;
-}
-LinkedList::~LinkedList() {
-    while(Head != nullptr) {
-        Node *k = Head;
-        Head = Head->next;
-        delete k;
-    }
-}
-void LinkedList::push_back(int nameNode) {
-    Node* New = new Node;
-    if (Head == nullptr){
-        New->nameNode = nameNode +1;
-        New->next = nullptr;
-        New->prev = nullptr;
-        Head = Tail = New;
-    }
-    else{
-        New->nameNode = nameNode +1;
-        Tail->next = New;
-        New->prev = Tail;
-        New->next = nullptr;
-        Tail = New;
-    }
-    Node::countNodes++;
-}
-void LinkedList::writeToFileFromTail() {
-    FILE* res = fopen("task6_Tail.txt", "w");
-    Node* Cursor = Tail;
-    //fprintf(res, "%i\n", Cursor);//если что удалить
-    while (Cursor != nullptr) {
-        fprintf(res, "%i\n", Cursor->nameNode);
-        Cursor = Cursor->prev;
-    }
-    fclose(res);
-}
-void LinkedList::writeToFileFromHead() {
-    FILE* res = fopen("task6_Head.txt", "w");
-    Node* Cursor = Head;
-    //fprintf(res, "%i\n", Cursor);
-    while (Cursor != nullptr) {
-        fprintf(res, "%i\n", Cursor->nameNode);
-        Cursor = Cursor->next;
-    }
-    fclose(res);
-}
-//
-//Task 7:
-//
-void LinkedList::insert(int nameNode, int position) {
-    Node* New = new Node;
-    New->nameNode = nameNode;
-    if(position == 0){
-        Head->prev = New;
-        New->next = Head;
-        New->prev = nullptr;
-        Head = New;
-    }
-    if(position > 0 && position <= Node::countNodes){
-        Node* c = Head;
-        for (int i = 0; i < position-1; i++){
-            c = c->next;
-        }
-        New->next = c->next;
-        New->prev = c;
-        c->next = New;
-        if(position == Node::countNodes){
-            Tail=New;
-        }
-        else{
-            New->next->prev = New;
-        }
-    }
-    Node::countNodes++;
-}
-
-void task_6und7(){
-    LinkedList out;
-    for(int i = 0; i < 15; i++){
-        out.push_back(i);
-    }
-    out.writeToFileFromHead();
-    out.insert(6, 3);
-    out.writeToFileFromTail();
 }
